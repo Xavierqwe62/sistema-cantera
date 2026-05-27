@@ -1,0 +1,60 @@
+<div class="container py-5">
+
+  <h1 class="text-center fw-bold mb-5">
+    Catálogo Completo
+  </h1>
+
+  <div class="row g-4">
+
+    <div
+      class="col-md-4"
+      *ngFor="let producto of productos">
+
+      <div class="card shadow border-0 h-100">
+
+        <img
+          [src]="producto.imagen"
+          class="card-img-top"
+          style="height:250px; object-fit:cover;">
+
+        <div class="card-body d-flex flex-column">
+
+          <h4 class="fw-bold">
+            {{ producto.nombre }}
+          </h4>
+
+          <p class="text-muted">
+            {{ producto.descripcion }}
+          </p>
+
+          <span class="badge bg-dark mb-3">
+            {{ producto.categoria }}
+          </span>
+
+          <h3 class="text-success fw-bold">
+            ${{ producto.precio_unitario }}
+          </h3>
+
+          <p>
+            Mayoreo desde
+            {{ producto.cantidad_mayoreo }}
+            piezas:
+          </p>
+
+          <h5 class="text-danger">
+            ${{ producto.precio_mayoreo }}
+          </h5>
+
+          <button class="btn btn-dark mt-auto">
+            Ver Detalles
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

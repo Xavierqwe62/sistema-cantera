@@ -1,0 +1,31 @@
+# ============================================================================
+# COPY THESE FILES TO: backend\database\
+# ============================================================================
+#
+# After running SETUP-DATABASE.bat or INIT-DATABASE.bat, you need to move
+# the generated files to the correct location.
+#
+# Quick Copy Instructions (Windows Command Prompt):
+# ============================================================================
+#
+# 1. Open Command Prompt
+# 2. Navigate to the project root:
+#    cd "C:\Users\Xavier\para proyectos web\proyecto"
+#
+# 3. Run these commands:
+#    mkdir backend\database
+#    copy schema.sql backend\database\schema.sql
+#    copy seed.sql backend\database\seed.sql
+#
+# 4. Verify the files exist:
+#    dir backend\database
+#
+# ============================================================================
+# OR: Run the FINALIZE-DATABASE.bat file:
+# ============================================================================
+#
+#    FINALIZE-DATABASE.bat
+#
+# This will automatically copy the files and verify they exist.
+#
+# ============================================================================

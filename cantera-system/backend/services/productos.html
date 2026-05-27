@@ -1,0 +1,42 @@
+<div class="container py-5">
+
+  <h1 class="fw-bold mb-5 text-center">
+    Catálogo de Productos
+  </h1>
+
+  <div class="row g-4">
+
+    <div
+      class="col-md-4"
+      *ngFor="let producto of productos">
+
+      <div class="card shadow h-100 border-0">
+
+        <img
+          src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200"
+          class="card-img-top"
+          style="height:250px; object-fit:cover;">
+
+        <div class="card-body">
+
+          <h4 class="fw-bold">
+            {{ producto.nombre }}
+          </h4>
+
+          <p>
+            {{ producto.descripcion }}
+          </p>
+
+          <h3 class="text-success">
+            ${{ producto.precio_unitario }}
+          </h3>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

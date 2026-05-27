@@ -1,0 +1,292 @@
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/inicio">
+      <img
+        src="../../../assets/cantera.jpg"
+        alt="Logo"
+        class="me-2 rounded-circle logo-img"
+        width="40"
+        height="40">
+      Canteras Renacimiento
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inicio">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/catalogo">Catálogo</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-warning btn-sm fw-bold ms-2 position-relative" 
+             (click)="abrirCarrito()"
+             style="cursor: pointer; border-radius: 5px; padding: 0.5rem 1rem;">
+            <i class="fa-solid fa-shopping-cart me-2"></i>Carrito
+            <span *ngIf="totalItems > 0" class="badge bg-danger position-absolute" style="top: -5px; right: -5px;">
+              {{ totalItems }}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER DEL CATÁLOGO -->
+<section class="catalogo-header mt-5 pt-5">
+  <div class="container text-center py-5">
+    <h1 class="display-4 fw-bold mb-3">Nuestro Catálogo</h1>
+    <p class="lead text-muted">
+      Explora nuestra amplia variedad de productos de cantera de alta calidad
+    </p>
+  </div>
+</section>
+
+<!-- FILTROS POR CATEGORÍA -->
+<section class="bg-light py-4">
+  <div class="container">
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <button
+        class="btn"
+        [ngClass]="categoriaSeleccionada === 'todos' ? 'btn-warning' : 'btn-outline-warning'"
+        (click)="filtrarPorCategoria('todos')">
+        Todos los Productos
+      </button>
+
+      <button
+        *ngFor="let cat of categorias"
+        class="btn"
+        [ngClass]="categoriaSeleccionada === cat ? 'btn-warning' : 'btn-outline-warning'"
+        (click)="filtrarPorCategoria(cat)">
+        {{ cat }}
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- GRID DE PRODUCTOS -->
+<section class="container py-5">
+  <div class="row g-4">
+    <div *ngFor="let producto of productosFiltrados" class="col-lg-4 col-md-6">
+      <div class="card producto-card shadow border-0 h-100">
+        <!-- IMAGEN -->
+        <div class="producto-img-container">
+          <img
+            [src]="producto.imagen"
+            [alt]="producto.nombre"
+            class="card-img-top producto-img">
+          <span class="categoria-badge">{{ producto.categoria }}</span>
+        </div>
+
+        <!-- CONTENIDO -->
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold mb-2">{{ producto.nombre }}</h5>
+          <p class="card-text text-muted flex-grow-1">{{ producto.descripcion }}</p>
+
+          <!-- PRECIO Y BOTONES -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="h5 text-warning mb-0">${{ producto.precio | number:'1.0-0' }}</span>
+          </div>
+
+          <button 
+            class="btn btn-warning w-100 mt-3 fw-bold"
+            (click)="agregarAlCarrito(producto)">
+            <i class="fa-solid fa-shopping-cart me-2"></i>Agregar al Carrito
+          </button>
+
+          <button class="btn btn-outline-secondary w-100 mt-2">
+            <i class="fa-solid fa-eye me-2"></i>Ver Detalles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENSAJE SI NO HAY PRODUCTOS -->
+  <div *ngIf="productosFiltrados.length === 0" class="text-center py-5">
+    <p class="text-muted">No hay productos en esta categoría</p>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="bg-warning bg-opacity-10 py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">¿Necesitas más información?</h2>
+    <p class="lead text-muted mb-4">
+      Contacta con nuestro equipo de ventas para consultas sobre productos y cotizaciones
+    </p>
+    <button class="btn btn-success btn-lg">
+      <i class="fa-brands fa-whatsapp me-2"></i>Contactar por WhatsApp
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+  <p class="mb-0">
+    © 2026 Canteras Renacimiento — Todos los derechos reservados
+  </p>
+</footer>
+
+<!-- MODAL DEL CARRITO -->
+<div *ngIf="mostrarCarrito" class="modal-overlay" (click)="cerrarCarrito()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- HEADER DEL MODAL -->
+    <div class="modal-header">
+      <h5 class="modal-title fw-bold">
+        <i class="fa-solid fa-shopping-cart me-2"></i>Tu Carrito de Compras
+      </h5>
+      <button type="button" class="btn-close" (click)="cerrarCarrito()"></button>
+    </div>
+
+    <!-- CONTENIDO DEL CARRITO -->
+    <div class="modal-body">
+      <ng-container *ngIf="cart && cart.items.length > 0; else carritoVacio">
+        <!-- ITEMS DEL CARRITO -->
+        <div class="cart-items">
+          <div *ngFor="let item of cart.items" class="cart-item">
+            <div class="cart-item-img">
+              <img [src]="item.imagen" [alt]="item.nombre" class="img-fluid">
+            </div>
+
+            <div class="cart-item-details">
+              <h6 class="fw-bold">{{ item.nombre }}</h6>
+              <p class="text-muted mb-2">${{ item.precio | number:'1.0-0' }} por pieza</p>
+
+              <div class="quantity-control">
+                <button class="btn btn-sm btn-outline-secondary" 
+                        (click)="actualizarCantidad(item.productId, item.cantidad - 1)">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="number" class="form-control form-control-sm mx-2" 
+                       [value]="item.cantidad" 
+                       (change)="actualizarCantidad(item.productId, $any($event.target).value)"
+                       min="1">
+                <button class="btn btn-sm btn-outline-secondary" 
+                        (click)="actualizarCantidad(item.productId, item.cantidad + 1)">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="cart-item-price">
+              <p class="fw-bold">${{ item.precio * item.cantidad | number:'1.0-0' }}</p>
+              <button class="btn btn-sm btn-danger" 
+                      (click)="eliminarDelCarrito(item.productId)">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- INFORMACIÓN DE DESCUENTOS -->
+        <div class="alert alert-info mt-4" *ngIf="cart.discountPercentage > 0">
+          <strong>🎉 ¡Descuento Aplicado!</strong><br>
+          {{ obtenerDescuentoActivo() }}<br>
+          Descuento: {{ cart.discountPercentage }}% (-${{ cart.discount | number:'1.0-2' }})
+        </div>
+
+        <!-- OPCIONES DE ENVÍO -->
+        <div class="shipping-section mt-4">
+          <h6 class="fw-bold mb-3">Método de Entrega</h6>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="shipping" id="recogida"
+                   [checked]="cart.shippingMethod === 'recogida'"
+                   (change)="establecerMetodoEnvio('recogida')">
+            <label class="form-check-label" for="recogida">
+              <strong>Recogida en Cantera</strong> - Gratis
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="shipping" id="envio"
+                   [checked]="cart.shippingMethod === 'envio'"
+                   (change)="establecerMetodoEnvio('envio', cart.shippingZone || 'local')">
+            <label class="form-check-label" for="envio">
+              <strong>Envío a Domicilio</strong>
+            </label>
+          </div>
+
+          <!-- ZONAS DE ENVÍO -->
+          <div *ngIf="cart.shippingMethod === 'envio'" class="mt-3 ps-4">
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="zona" id="local"
+                     [checked]="cart.shippingZone === 'local'"
+                     (change)="establecerMetodoEnvio('envio', 'local')">
+              <label class="form-check-label" for="local">
+                Local (mismo municipio) - $150
+              </label>
+            </div>
+
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="zona" id="regional"
+                     [checked]="cart.shippingZone === 'regional'"
+                     (change)="establecerMetodoEnvio('envio', 'regional')">
+              <label class="form-check-label" for="regional">
+                Regional (mismo estado) - $300
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="zona" id="nacional"
+                     [checked]="cart.shippingZone === 'nacional'"
+                     (change)="establecerMetodoEnvio('envio', 'nacional')">
+              <label class="form-check-label" for="nacional">
+                Nacional - $500
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESUMEN DE ORDEN -->
+        <div class="order-summary mt-4">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>${{ cart.subtotal | number:'1.0-2' }}</span>
+          </div>
+          <div class="summary-row" *ngIf="cart.discount > 0">
+            <span class="text-success">Descuento ({{ cart.discountPercentage }}%):</span>
+            <span class="text-success">-${{ cart.discount | number:'1.0-2' }}</span>
+          </div>
+          <div class="summary-row" *ngIf="cart.shippingCost > 0">
+            <span>Envío:</span>
+            <span>${{ cart.shippingCost | number:'1.0-2' }}</span>
+          </div>
+          <div class="summary-row total">
+            <strong>Total:</strong>
+            <strong class="text-warning">${{ cart.total | number:'1.0-2' }}</strong>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #carritoVacio>
+        <div class="text-center py-5">
+          <i class="fa-solid fa-shopping-cart" style="font-size: 3rem; color: #ccc;"></i>
+          <p class="text-muted mt-3">Tu carrito está vacío</p>
+          <p class="text-muted small">Agrega productos para ver el resumen</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- FOOTER DEL MODAL -->
+    <div class="modal-footer" *ngIf="cart && cart.items.length > 0">
+      <button type="button" class="btn btn-outline-secondary" (click)="cerrarCarrito()">
+        Continuar Comprando
+      </button>
+      <button type="button" class="btn btn-warning btn-lg fw-bold">
+        <i class="fa-solid fa-credit-card me-2"></i>Proceder al Pago
+      </button>
+    </div>
+  </div>
+</div>
